@@ -6,16 +6,19 @@ import {
 } from "@solana/wallet-adapter-react";
 import { WalletModalProvider } from "@solana/wallet-adapter-react-ui";
 import { clusterApiUrl } from "@solana/web3.js";
-import * as walletAdapterWallets from "@solana/wallet-adapter-wallets";
-// require("@solana/wallet-adapter-react-ui/styles.css");
 import {
     PhantomWalletAdapter,
     SolflareWalletAdapter,
     TorusWalletAdapter,
   } from "@solana/wallet-adapter-wallets";
 
-const WalletContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
-  const endpoint = clusterApiUrl("devnet");
+interface WalletContextProviderProps {
+  children: ReactNode;
+  network?: "mainnet-beta" | "devnet";
+}
+
+const WalletContextProvider: FC<WalletContextProviderProps> = ({ children, network = "devnet" }) => {
+  const endpoint = clusterApiUrl(network);
   const wallets = useMemo(
     () => [
       new PhantomWalletAdapter(),

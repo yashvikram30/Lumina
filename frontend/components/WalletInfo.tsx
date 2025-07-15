@@ -11,9 +11,9 @@ const WalletInfo = () => {
   if (!publicKey) return null;
 
   return (
-    <div>
-      <div>Address: {shortenAddress(publicKey.toBase58())}</div>
-      <div>SOL Balance: {balance !== null ? balance.toFixed(4) : "Loading..."}</div>
+    <div className="px-3 py-2 border-2 border-black rounded-lg bg-yellow-100 font-mono text-xs text-black flex flex-col items-start shadow-neobrutalism">
+      <div className="mb-1">Address: <span className="font-bold">{shortenAddress(publicKey.toBase58())}</span></div>
+      <div>SOL: <span className="font-bold">{balance !== null ? balance.toFixed(4) : "Loading..."}</span></div>
     </div>
   );
 };
