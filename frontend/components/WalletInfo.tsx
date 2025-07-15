@@ -1,21 +1,26 @@
-"use client";
-import { useWalletInfo } from "@/hooks/useWalletInfo";
+import React from "react";
+import NeobrutalCard from "./ui/NeobrutalCard";
 
-function shortenAddress(address: string) {
-  return address.slice(0, 4) + "..." + address.slice(-4);
+interface NetworkSwitcherProps {
+  network: "mainnet-beta" | "devnet";
+  onNetworkChange: (network: "mainnet-beta" | "devnet") => void;
 }
 
-const WalletInfo = () => {
-  const { publicKey, balance } = useWalletInfo();
-
-  if (!publicKey) return null;
-
+const NetworkSwitcher: React.FC<NetworkSwitcherProps> = ({ network, onNetworkChange }) => {
   return (
-    <div className="px-3 py-2 border-2 border-black rounded-lg bg-yellow-100 font-mono text-xs text-black flex flex-col items-start shadow-neobrutalism">
-      <div className="mb-1">Address: <span className="font-bold">{shortenAddress(publicKey.toBase58())}</span></div>
-      <div>SOL: <span className="font-bold">{balance !== null ? balance.toFixed(4) : "Loading..."}</span></div>
-    </div>
+    <NeobrutalCard className="flex items-center gap-2 px-2 py-1 bg-yellow-100 border-2 border-black rounded-lg shadow-neobrutalism">
+      {/* <label htmlFor="network-select" className="font-mono text-xs text-black mr-2">Network:</label> */}
+      <select
+        id="network-select"
+        value={network}
+        onChange={e => onNetworkChange(e.target.value as "mainnet-beta" | "devnet")}
+        className="font-mono text-xs border-2 border-black rounded  bg-white focus:outline-none focus:ring-2 focus:ring-pink-400"
+      >
+        <option value="mainnet-beta">Mainnet</option>
+        <option value="devnet">Devnet</option>
+      </select>
+    </NeobrutalCard>
   );
 };
 
-export default WalletInfo;
+export default NetworkSwitcher;

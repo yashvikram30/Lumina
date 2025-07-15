@@ -2,8 +2,12 @@
 import { useTokenBalances } from "@/hooks/useTokenBalances";
 import { useTokenList } from "@/hooks/useTokenList";
 import { useTokenPrices } from "@/hooks/useTokenPrices";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
 import PriceChart from "@/components/PriceChart";
+import NeobrutalCard from "@/components/ui/NeobrutalCard"; // Import the new component
+import { useEffect, useState } from "react";
+
 const fallbackLogo = "/vercel.svg";
 
 // Popular devnet tokens (add more as needed)
@@ -40,11 +44,11 @@ const TokenBalances = () => {
   const { tokens: tokenList, loading } = useTokenList();
   const mintAddresses = tokens.map(t => t.mint);
   const prices = useTokenPrices(mintAddresses);
-  const [opened, setOpened] = useState(false);
-  const [selectedToken, setSelectedToken] = useState<any>(null);
+  const router = useRouter();
 
-  if (!tokens.length) return <div className="text-center text-lg font-semibold py-8">No tokens found.</div>;
   if (loading) return <div className="text-center text-lg font-semibold py-8">Loading...</div>;
+  if (!tokens.length) return <div className="text-center text-lg font-semibold py-8">No tokens found.</div>;
+  
 
   // Helper to get tokenMeta
   const getTokenMeta = (mint: string) => {
@@ -55,71 +59,77 @@ const TokenBalances = () => {
     return tokenMeta;
   };
 
-  return (
-    <>
-      {/* Modal */}
-      {opened && selectedToken && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-          <div className="bg-white border-4 border-black rounded-xl shadow-neobrutalism p-6 w-full max-w-md relative">
-            <button
-              className="absolute top-2 right-2 bg-black text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-neutral-800 transition"
-              onClick={() => setOpened(false)}
-              aria-label="Close"
-            >
-              ×
-            </button>
-            <div className="flex items-center gap-4 mb-4">
-              <img
-                src={getTokenMeta(selectedToken.mint)?.logoURI || fallbackLogo}
-                alt={getTokenMeta(selectedToken.mint)?.symbol || "Token"}
-                className="w-12 h-12 rounded-full border-2 border-black bg-white object-cover"
-              />
-              <div>
-                <div className="font-bold text-lg">{getTokenMeta(selectedToken.mint)?.name || "Devnet Token"}</div>
-                <span className="inline-block bg-yellow-200 border-2 border-black rounded px-2 py-0.5 text-xs font-mono mt-1">{getTokenMeta(selectedToken.mint)?.symbol || "Devnet"}</span>
-              </div>
-            </div>
-            <div className="text-sm text-neutral-700 mb-2 break-all">Mint: {selectedToken.mint}</div>
-            <div className="mb-1">Balance: <span className="font-mono">{selectedToken.amount}</span></div>
-            <div className="mb-1">Decimals: <span className="font-mono">{selectedToken.decimals}</span></div>
-            <div className="mb-4">Value (USD): <span className="font-mono">${(selectedToken.amount * (prices[selectedToken.mint] || 0)).toFixed(2)}</span></div>
-            <PriceChart mint={selectedToken.mint} symbol={getTokenMeta(selectedToken.mint)?.symbol || "Token"} />
-          </div>
-        </div>
-      )}
+  // Define color themes for cycling backgrounds
+  const colorThemes = [
+    "bg-yellow-300",
+    "bg-blue-400",
+    "bg-pink-400",
+  ];
 
-      <div className="flex flex-col gap-4 mt-8 mx-auto max-w-2xl">
-        {tokens.map((token) => {
-          const tokenMeta = getTokenMeta(token.mint);
-          return (
-            <div
-              key={token.mint}
-              className="bg-white border-4 border-black rounded-xl shadow-neobrutalism flex items-center gap-4 p-4 cursor-pointer hover:scale-[1.02] transition-transform"
-              onClick={() => { setSelectedToken(token); setOpened(true); }}
-            >
-              <img
-                src={tokenMeta?.logoURI || fallbackLogo}
-                alt={tokenMeta?.symbol || "Unknown Token"}
-                className="w-10 h-10 rounded-full border-2 border-black bg-white object-cover"
-              />
-              <div className="flex-1">
-                <div className="font-bold text-lg">{tokenMeta?.name || "Devnet Token"}</div>
-                <div className="flex items-center gap-2 mt-1">
-                  <span className="inline-block bg-yellow-200 border-2 border-black rounded px-2 py-0.5 text-xs font-mono">{tokenMeta?.symbol || "Devnet"}</span>
-                  <span className="text-sm text-neutral-500">{token.amount} {tokenMeta?.symbol || ""}</span>
-                </div>
+  // List of available local images in public folder
+  const localImages = ["sui", "polygon", "eth", "bitcoin", "sol", "usdc"];
+
+  function TokenImage({ symbol, logoURI, ...props }: { symbol?: string; logoURI?: string; [key: string]: any }) {
+    const lowerSymbol = (symbol || "").toLowerCase();
+    let initialImageSrc = logoURI || fallbackLogo;
+    if (localImages.includes(lowerSymbol)) {
+      initialImageSrc = `/${lowerSymbol}.png`;
+    }
+    const [imgSrc, setImgSrc] = useState(initialImageSrc);
+
+    useEffect(() => {
+      setImgSrc(initialImageSrc);
+    }, [initialImageSrc]);
+
+    return (
+      <Image
+        src={imgSrc}
+        alt={symbol || "Unknown Token"}
+        width={48}
+        height={48}
+        className="w-16 h-16 rounded-full border-2 border-black object-cover shadow-[3px_3px_0_0_#000] mr-10"
+        onError={() => {
+          if (imgSrc !== logoURI && logoURI) {
+            setImgSrc(logoURI);
+          } else if (imgSrc !== fallbackLogo) {
+            setImgSrc(fallbackLogo);
+          }
+        }}
+        {...props}
+      />
+    );
+  }
+
+  return (
+    <div className="flex flex-col gap-10 mt-16 mx-auto max-w-2xl w-full items-center">
+      {tokens.map((token, idx) => {
+        const tokenMeta = getTokenMeta(token.mint);
+        return (
+        
+          <NeobrutalCard
+            key={token.mint}
+            className={`flex items-center w-full min-w-[340px] max-w-2xl px-8 py-8 rounded-2xl border-4 transition-transform hover:scale-105 shadow-[8px_8px_0_0_#000] ${colorThemes[idx % colorThemes.length]}`}
+            onClick={() => router.push(`/token/${tokenMeta?.symbol?.toLowerCase()}`)}
+          >
+            <TokenImage symbol={tokenMeta?.symbol} logoURI={tokenMeta?.logoURI} />
+            <div className="flex-1 flex flex-col justify-center min-w-0 gap-2">
+              <div className="text-3xl font-extrabold text-black truncate drop-shadow-neobrutalism mb-1">{tokenMeta?.name || "Devnet Token"}</div>
+              <div className="flex items-center gap-4 mt-2">
+                <span className={`inline-block border-2 border-black rounded px-4 py-2 text-xl font-mono shadow-[4px_4px_0_0_#000] ${colorThemes[(idx + 1) % colorThemes.length]}`}>{tokenMeta?.symbol || "Devnet"}</span>
+                <span className="text-xl text-neutral-700 font-mono truncate">{token.amount} {tokenMeta?.symbol || ""}</span>
               </div>
-              <button
-                className="bg-black text-white rounded-lg px-3 py-1 text-xs font-bold border-2 border-black hover:bg-neutral-800 transition"
-                onClick={e => { e.stopPropagation(); setSelectedToken(token); setOpened(true); }}
-              >
-                Details
-              </button>
             </div>
-          );
-        })}
-      </div>
-    </>
+            <button
+              className={`border-2 border-black rounded-lg px-8 py-3 text-xl font-extrabold shadow-[4px_4px_0_0_#000] hover:scale-110 ml-10 transition ${colorThemes[(idx + 1) % colorThemes.length]}`}
+              onClick={e => { e.stopPropagation(); router.push(`/token/${tokenMeta?.symbol?.toLowerCase()}`); }}
+            >
+              Details
+            </button>
+          </NeobrutalCard>
+          
+        );
+      })}
+    </div>
   );
 };
 

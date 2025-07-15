@@ -18,7 +18,12 @@ interface WalletContextProviderProps {
 }
 
 const WalletContextProvider: FC<WalletContextProviderProps> = ({ children, network = "devnet" }) => {
-  const endpoint = clusterApiUrl(network);
+  const endpoint = useMemo(() => {
+    if (network === "mainnet-beta") {
+      return String(process.env.NEXT_PUBLIC_HELIUS_API_KEY);
+    }
+    return clusterApiUrl("devnet");
+  }, [network]);
   const wallets = useMemo(
     () => [
       new PhantomWalletAdapter(),
@@ -29,8 +34,8 @@ const WalletContextProvider: FC<WalletContextProviderProps> = ({ children, netwo
   );
 
   return (
-    <ConnectionProvider endpoint={endpoint}>
-      <WalletProvider wallets={wallets}>
+    <ConnectionProvider endpoint={endpoint} key={network}>
+      <WalletProvider wallets={wallets} key={network}>
         <WalletModalProvider>{children}</WalletModalProvider>
       </WalletProvider>
     </ConnectionProvider>

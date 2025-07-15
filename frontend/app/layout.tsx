@@ -24,7 +24,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [network, setNetwork] = useState<"mainnet-beta" | "devnet">("devnet");
+  const [network, setNetwork] = useState<"mainnet-beta" | "devnet">("mainnet-beta");
   return (
     <html lang="en">
       <body
@@ -32,7 +32,7 @@ export default function RootLayout({
       >
         <WalletContextProvider network={network}>
           <div className="min-h-screen flex flex-col">
-            <Header />
+            <Header network={network} onNetworkChange={setNetwork} />
             <main className="flex-1 flex flex-col items-center justify-center w-full">
               {children}
             </main>

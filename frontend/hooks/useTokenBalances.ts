@@ -2,6 +2,9 @@ import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
 import { useEffect, useState } from "react";
 
+// Wrapped SOL mint address (same for mainnet and devnet)
+const WSOL_MINT = "So11111111111111111111111111111111111111112";
+
 export function useTokenBalances() {
     const { publicKey } = useWallet();
     const { connection } = useConnection();
@@ -14,11 +17,11 @@ export function useTokenBalances() {
         }
 
         const fetchTokens = async () => {
+            // Fetch SPL tokens
             const response = await connection.getParsedTokenAccountsByOwner(
                 publicKey,
                 { programId: new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA") }
             );
-            // Parse the token info
             const tokenList = response.value.map((accountInfo) => {
                 const info = accountInfo.account.data.parsed.info;
                 return {
@@ -27,7 +30,14 @@ export function useTokenBalances() {
                     decimals: info.tokenAmount.decimals,
                 };
             });
-            setTokens(tokenList);
+            // Fetch native SOL balance
+            const solLamports = await connection.getBalance(publicKey);
+            const solToken = {
+                mint: WSOL_MINT,
+                amount: solLamports / 1e9, // Convert lamports to SOL
+                decimals: 9,
+            };
+            setTokens([solToken, ...tokenList]);
         };
 
         fetchTokens();
