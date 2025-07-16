@@ -15,6 +15,7 @@
     "@solana/wallet-adapter-wallets": "^0.19.37",
     "@solana/web3.js": "^1.98.2",
     "gsap": "^3.13.0",
+    "lucide-react": "^0.525.0",
     "next": "15.3.5",
     "qrcode.react": "^4.2.0",
     "react": "^19.0.0",
