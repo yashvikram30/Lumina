@@ -26,8 +26,13 @@ export default function RootLayout({
   const [network, setNetwork] = useState<"mainnet-beta" | "devnet">("mainnet-beta");
   return (
     <html lang="en">
+      <head>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased text-neutral-900 min-h-screen`}
+        style={{ fontFamily: "'Space Grotesk', sans-serif" }}
       >
         <WalletContextProvider network={network}>
           <div className="min-h-screen flex flex-col bg-gradient-to-br from-yellow-200 via-pink-200 to-blue-200">
