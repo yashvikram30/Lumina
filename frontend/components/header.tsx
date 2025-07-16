@@ -4,12 +4,7 @@ const WalletButton = dynamic(() => import("./WalletButton"), { ssr: false });
 import NetworkSwitcher from "./WalletInfo";
 import SectionNav from "@/components/SectionNav";
 
-interface HeaderProps {
-  network: "mainnet-beta" | "devnet";
-  onNetworkChange: (network: "mainnet-beta" | "devnet") => void;
-}
-
-const Header = ({ network, onNetworkChange }: HeaderProps) => (
+const Header = () => (
   <>
     <header className="w-full border-b-4 border-black bg-[#FFE066] px-0 py-5 flex justify-between items-center" style={{ boxShadow: 'none' }}>
       <div className="flex items-center gap-4 pl-8">

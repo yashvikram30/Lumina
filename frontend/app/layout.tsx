@@ -1,10 +1,8 @@
-"use client"
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import WalletContextProvider from "@/components/WalletContextProvider";
 import "@solana/wallet-adapter-react-ui/styles.css";
-import { useState } from "react";
 import AppGate from "@/components/AppGate";
 
 
@@ -18,12 +16,19 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+export const metadata: Metadata = {
+  title: 'Lumina',
+  description: 'Track your crypto portfolio across chains with a beautiful, neobrutalist UI.',
+  openGraph: {
+    images: ['/i.png'],
+  },
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [network, setNetwork] = useState<"mainnet-beta" | "devnet">("mainnet-beta");
   return (
     <html lang="en">
       <head>
@@ -34,9 +39,9 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased text-neutral-900 min-h-screen`}
         style={{ fontFamily: "'Space Grotesk', sans-serif" }}
       >
-        <WalletContextProvider network={network}>
+        <WalletContextProvider network="mainnet-beta">
           <div className="min-h-screen flex flex-col bg-gradient-to-br from-yellow-200 via-pink-200 to-blue-200">
-            <AppGate network={network} onNetworkChange={setNetwork}>{children}</AppGate>
+            <AppGate>{children}</AppGate>
           </div>
         </WalletContextProvider>
       </body>
