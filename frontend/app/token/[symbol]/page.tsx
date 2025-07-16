@@ -1,6 +1,5 @@
 "use client";
 import { useRouter } from "next/navigation";
-import type { PageProps } from "next";
 import NeobrutalCard from "@/components/ui/NeobrutalCard";
 import PriceChart from "@/components/PriceChart";
 import { useTokenList } from "@/hooks/useTokenList";
@@ -15,7 +14,8 @@ import Badge from "@/components/ui/Badge";
 const localImages = ["sui", "polygon", "eth", "bitcoin", "sol", "usdc"];
 const fallbackLogo = "/vercel.svg";
 
-export default function TokenDetailPage({ params }: PageProps<{ symbol: string }>) {
+// NOTE: Using 'any' for params due to Next.js 15 type issues with dynamic route params
+export default function TokenDetailPage({ params }: any) {
   const router = useRouter();
   const symbolParam = params.symbol;
   const { tokens: tokenList } = useTokenList();
