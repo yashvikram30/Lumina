@@ -20,7 +20,7 @@ interface WalletContextProviderProps {
 const WalletContextProvider: FC<WalletContextProviderProps> = ({ children, network = "devnet" }) => {
   const endpoint = useMemo(() => {
     if (network === "mainnet-beta") {
-      return String(process.env.NEXT_PUBLIC_HELIUS_API_KEY);
+      return String(process.env.NEXT_PUBLIC_HELIUS_RPC_URL);
     }
     return clusterApiUrl("devnet");
   }, [network]);

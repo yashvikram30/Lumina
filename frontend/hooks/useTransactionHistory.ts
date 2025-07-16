@@ -10,6 +10,23 @@ export interface ParsedTransaction {
   to: string;
 }
 
+// Map known native mints/addresses to symbols/names
+const NATIVE_ASSET_MAP: Record<string, { symbol: string; name: string }> = {
+  // Solana
+  SOL: { symbol: "SOL", name: "Solana" },
+  // Ethereum
+  ETH: { symbol: "ETH", name: "Ethereum" },
+  // Bitcoin
+  BTC: { symbol: "BTC", name: "Bitcoin" },
+  // Polygon
+  MATIC: { symbol: "MATIC", name: "Polygon" },
+  // Base
+  BASE: { symbol: "ETH", name: "Base" },
+  // Sui
+  SUI: { symbol: "SUI", name: "Sui" },
+  // Add more as needed
+};
+
 export function useTransactionHistory(address: string | undefined) {
   const [transactions, setTransactions] = useState<ParsedTransaction[]>([]);
   const [loading, setLoading] = useState(false);
@@ -17,7 +34,7 @@ export function useTransactionHistory(address: string | undefined) {
 
   useEffect(() => {
     if (!address) return;
-    const apiKey = process.env.NEXT_PUBLIC_HELIUS_API_KEY;
+    const apiKey = String(process.env.NEXT_PUBLIC_HELIUS_API_KEY);
     if (!apiKey) {
       setError("Helius API key not set");
       return;
@@ -30,18 +47,49 @@ export function useTransactionHistory(address: string | undefined) {
       .then((res) => res.json())
       .then((data) => {
         // Parse transactions
-        const txs: ParsedTransaction[] = (data || []).map((tx: any) => {
-          // Basic parsing, can be improved for more token types
-          const meta = tx.tokenTransfers && tx.tokenTransfers[0];
-          return {
+        const txs: ParsedTransaction[] = [];
+        (data || []).forEach((tx: any) => {
+          // 1. SPL token transfers (Solana, Wormhole, etc)
+          if (Array.isArray(tx.tokenTransfers) && tx.tokenTransfers.length > 0) {
+            const meta = tx.tokenTransfers[0];
+            txs.push({
+              signature: tx.signature,
+              date: tx.timestamp ? new Date(tx.timestamp * 1000).toLocaleString() : "-",
+              type: meta.fromUserAccount === address ? "Send" : "Receive",
+              token: meta.tokenSymbol || meta.mint || "-",
+              amount: meta.tokenAmount || 0,
+              from: meta.fromUserAccount || "-",
+              to: meta.toUserAccount || "-",
+            });
+            return; // prioritize token transfer
+          }
+          // 2. Native asset transfers (SOL, ETH, BTC, etc)
+          if (Array.isArray(tx.nativeTransfers) && tx.nativeTransfers.length > 0) {
+            const nt = tx.nativeTransfers[0];
+            let asset = nt.asset || nt.symbol || "SOL";
+            asset = asset.toUpperCase();
+            const assetMeta = NATIVE_ASSET_MAP[asset] || { symbol: asset, name: asset };
+            txs.push({
+              signature: tx.signature,
+              date: tx.timestamp ? new Date(tx.timestamp * 1000).toLocaleString() : "-",
+              type: nt.fromUserAccount === address ? "Send" : "Receive",
+              token: assetMeta.symbol,
+              amount: nt.amount || 0,
+              from: nt.fromUserAccount || nt.from || "-",
+              to: nt.toUserAccount || nt.to || "-",
+            });
+            return;
+          }
+          // 3. Fallback: Unknown
+          txs.push({
             signature: tx.signature,
             date: tx.timestamp ? new Date(tx.timestamp * 1000).toLocaleString() : "-",
-            type: meta ? (meta.fromUserAccount === address ? "Send" : "Receive") : "Unknown",
-            token: meta ? meta.tokenSymbol || meta.mint : "-",
-            amount: meta ? meta.tokenAmount : 0,
-            from: meta ? meta.fromUserAccount : "-",
-            to: meta ? meta.toUserAccount : "-",
-          };
+            type: "Unknown",
+            token: "-",
+            amount: 0,
+            from: "-",
+            to: "-",
+          });
         });
         setTransactions(txs);
         setLoading(false);

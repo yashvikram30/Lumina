@@ -6,7 +6,8 @@ const SECTIONS = [
   { href: "/portfolio", label: "Portfolio Analytics" },
   { href: "/tokens", label: "Tokens" },
   { href: "/history", label: "Transaction History" },
-  { href: "/transaction", label: "Send or Receive" },
+  { href: "/send", label: "Send" },
+  { href: "/receive", label: "Receive" },
 ];
 
 const SectionNav: React.FC = () => {

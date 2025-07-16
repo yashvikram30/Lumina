@@ -19,7 +19,7 @@ const NeobrutalCard: React.FC<NeobrutalCardProps> = ({
 }) => {
   return (
     <div
-      className={`relative border-4 border-black ${rounded} ${padding} w-full max-w-4xl flex flex-col items-center justify-between font-extrabold text-black bg-gradient-to-br from-yellow-200 via-pink-200 to-blue-200 shadow-[8px_8px_0_0_#000] hover:shadow-[16px_16px_0_0_#000] transition-transform duration-200 ease-in-out ${className}`}
+      className={`relative border-4 border-black ${rounded} ${padding} w-full max-w-4xl flex flex-col items-center justify-between font-extrabold text-black bg-white shadow-[8px_8px_0_0_#000] hover:shadow-[16px_16px_0_0_#000] transition-transform duration-200 ease-in-out ${className}`}
       style={style}
       onClick={onClick}
     >

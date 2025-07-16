@@ -1,5 +1,6 @@
 "use client";
 import { useRouter } from "next/navigation";
+import type { PageProps } from "next";
 import NeobrutalCard from "@/components/ui/NeobrutalCard";
 import PriceChart from "@/components/PriceChart";
 import { useTokenList } from "@/hooks/useTokenList";
@@ -7,14 +8,16 @@ import { useTokenBalances } from "@/hooks/useTokenBalances";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import Head from "next/head";
-import React from "react";
+import Banner from "@/components/ui/Banner";
+import OutlinedPanel from "@/components/ui/OutlinedPanel";
+import Badge from "@/components/ui/Badge";
 
 const localImages = ["sui", "polygon", "eth", "bitcoin", "sol", "usdc"];
 const fallbackLogo = "/vercel.svg";
 
-export default function TokenDetailPage({ params }: { params: { symbol: string } }) {
+export default function TokenDetailPage({ params }: PageProps<{ symbol: string }>) {
   const router = useRouter();
-  const { symbol: symbolParam } = React.use(params);
+  const symbolParam = params.symbol;
   const { tokens: tokenList } = useTokenList();
   const balances = useTokenBalances();
 
@@ -33,7 +36,7 @@ export default function TokenDetailPage({ params }: { params: { symbol: string }
       logoURI: "https://cryptologos.cc/logos/tether-usdt-logo.png",
     },
     {
-      address: "7XSzF1Q6Xo8Xz8Q6Qd8Q6Qd8Q6Qd8Q6Qd8Q6Qd8Q6Qd8Q", // USDC Devnet
+      address: "7XSzF1Q6Xo8Xz8Q6Qd8Q6d8Q6Qd8Q6Qd8Q6Qd8Q6Qd8Q", // USDC Devnet
       name: "USD Coin (Devnet)",
       symbol: "USDC",
       logoURI: "https://cryptologos.cc/logos/usd-coin-usdc-logo.png",
@@ -74,36 +77,40 @@ export default function TokenDetailPage({ params }: { params: { symbol: string }
       <Head>
         <title>{symbol} | Solana Portfolio</title>
       </Head>
-      <div className="flex flex-col items-center justify-center min-h-screen bg-white">
-        <NeobrutalCard className="max-w-xl w-full flex flex-col items-center mt-16">
+      <div className="flex flex-col items-center justify-center min-h-screen bg-transparent gap-8 py-8">
+        <div className="w-full max-w-xl flex flex-col gap-6">
           <button
-            className="mb-6 bg-blue-400 border-2 border-black text-black rounded-lg px-6 py-2 text-lg font-extrabold shadow-[2px_2px_0_0_#000] hover:bg-blue-300 transition"
-            onClick={() => router.push("/")}
+            className="mb-2 bg-blue-400 border-2 border-black text-black rounded-lg px-6 py-2 text-lg font-extrabold shadow-[2px_2px_0_0_#000] hover:bg-blue-300 transition self-start"
+            onClick={() => router.push("/tokens")}
           >
             ← Back
           </button>
-          <Image
-            src={imgSrc}
-            alt={symbol}
-            width={64}
-            height={64}
-            className="mb-4"
-            onError={() => {
-              if (imgSrc !== logoURI && logoURI) {
-                setImgSrc(logoURI);
-              } else if (imgSrc !== fallbackLogo) {
-                setImgSrc(fallbackLogo);
-              }
-            }}
-          />
-          <h1 className="text-3xl font-extrabold mb-2 text-black drop-shadow-neobrutalism">{name}</h1>
-          <div className="mb-2 text-lg font-mono text-black">Symbol: {symbol}</div>
-          <div className="mb-2 text-lg font-mono text-black">Mint: <span className="break-all">{mint}</span></div>
-          <div className="mb-4 text-lg font-mono text-black">Your Balance: {balance}</div>
-          <div className="w-full mb-6">
+          <Banner className="mb-0">{name}</Banner>
+          <OutlinedPanel className="flex flex-col items-center gap-4">
+            <Image
+              src={imgSrc}
+              alt={symbol}
+              width={64}
+              height={64}
+              className="mb-2"
+              onError={() => {
+                if (imgSrc !== logoURI && logoURI) {
+                  setImgSrc(logoURI);
+                } else if (imgSrc !== fallbackLogo) {
+                  setImgSrc(fallbackLogo);
+                }
+              }}
+            />
+            <div className="flex flex-row items-center gap-4">
+              <Badge color="bg-blue-200">{symbol}</Badge>
+              <span className="font-mono text-black text-base">{mint}</span>
+            </div>
+            <div className="text-lg font-mono text-black">Your Balance: <span className="font-extrabold">{balance}</span></div>
+          </OutlinedPanel>
+          <OutlinedPanel className="w-full mt-2">
             <PriceChart symbol={symbol} />
-          </div>
-        </NeobrutalCard>
+          </OutlinedPanel>
+        </div>
       </div>
     </>
   );
