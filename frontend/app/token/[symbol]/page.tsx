@@ -1,5 +1,5 @@
 "use client";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import NeobrutalCard from "@/components/ui/NeobrutalCard";
 import PriceChart from "@/components/PriceChart";
 import { useTokenList } from "@/hooks/useTokenList";
@@ -10,14 +10,23 @@ import Head from "next/head";
 import Banner from "@/components/ui/Banner";
 import OutlinedPanel from "@/components/ui/OutlinedPanel";
 import Badge from "@/components/ui/Badge";
+import React from "react";
 
 const localImages = ["sui", "polygon", "eth", "bitcoin", "sol", "usdc"];
 const fallbackLogo = "/vercel.svg";
 
 // NOTE: Using 'any' for params due to Next.js 15 type issues with dynamic route params
-export default function TokenDetailPage({ params }: any) {
+export default function TokenDetailPage() {
   const router = useRouter();
+  const params = useParams();
   const symbolParam = params.symbol;
+  let symbol = symbolParam;
+  if (Array.isArray(symbol)) {
+    symbol = symbol[0];
+  }
+  if (!symbol) {
+    return <div className="text-center py-8">Invalid token symbol.</div>;
+  }
   const { tokens: tokenList } = useTokenList();
   const balances = useTokenBalances();
 
@@ -50,19 +59,19 @@ export default function TokenDetailPage({ params }: any) {
   ];
 
   // Find token meta by symbol (case-insensitive)
-  let tokenMeta = tokenList.find(t => (t.symbol || '').toLowerCase() === symbolParam.toLowerCase());
+  let tokenMeta = tokenList.find(t => (t.symbol || '').toLowerCase() === symbol.toLowerCase());
   if (!tokenMeta) {
-    tokenMeta = devnetTokenList.find(t => (t.symbol || '').toLowerCase() === symbolParam.toLowerCase());
+    tokenMeta = devnetTokenList.find(t => (t.symbol || '').toLowerCase() === symbol.toLowerCase());
   }
-  const mint = tokenMeta?.address || symbolParam; // fallback to symbolParam if not found
+  const mint = tokenMeta?.address || symbol; // fallback to symbol if not found
   const balanceObj = balances.find(t => t.mint.toLowerCase() === mint.toLowerCase());
-  const symbol = tokenMeta?.symbol || symbolParam.toUpperCase();
+  const displaySymbol = tokenMeta?.symbol || symbol.toUpperCase();
   const name = tokenMeta?.name || "Unknown Token";
   const logoURI = tokenMeta?.logoURI || fallbackLogo;
   const balance = balanceObj ? balanceObj.amount : 0;
 
   // Local image fallback logic
-  const lowerSymbol = (symbol || "").toLowerCase();
+  const lowerSymbol = (displaySymbol || "").toLowerCase();
   let initialImageSrc = logoURI;
   if (localImages.includes(lowerSymbol)) {
     initialImageSrc = `/${lowerSymbol}.png`;
@@ -75,7 +84,7 @@ export default function TokenDetailPage({ params }: any) {
   return (
     <>
       <Head>
-        <title>{symbol} | Solana Portfolio</title>
+        <title>{displaySymbol} | Solana Portfolio</title>
       </Head>
       <div className="flex flex-col items-center justify-center min-h-screen bg-transparent gap-8 py-8">
         <div className="w-full max-w-xl flex flex-col gap-6">
@@ -89,7 +98,7 @@ export default function TokenDetailPage({ params }: any) {
           <OutlinedPanel className="flex flex-col items-center gap-4">
             <Image
               src={imgSrc}
-              alt={symbol}
+              alt={displaySymbol}
               width={64}
               height={64}
               className="mb-2"
@@ -102,13 +111,13 @@ export default function TokenDetailPage({ params }: any) {
               }}
             />
             <div className="flex flex-row items-center gap-4">
-              <Badge color="bg-blue-200">{symbol}</Badge>
+              <Badge color="bg-blue-200">{displaySymbol}</Badge>
               <span className="font-mono text-black text-base">{mint}</span>
             </div>
             <div className="text-lg font-mono text-black">Your Balance: <span className="font-extrabold">{balance}</span></div>
           </OutlinedPanel>
           <OutlinedPanel className="w-full mt-2">
-            <PriceChart symbol={symbol} />
+            <PriceChart symbol={displaySymbol} />
           </OutlinedPanel>
         </div>
       </div>
