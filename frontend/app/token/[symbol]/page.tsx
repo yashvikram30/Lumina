@@ -11,6 +11,7 @@ import Banner from "@/components/ui/Banner";
 import OutlinedPanel from "@/components/ui/OutlinedPanel";
 import Badge from "@/components/ui/Badge";
 import React from "react";
+import FloatingShapes from "@/components/ui/FloatingShapes";
 
 const localImages = ["sui", "polygon", "eth", "bitcoin", "sol", "usdc"];
 const fallbackLogo = "/vercel.svg";
@@ -19,6 +20,9 @@ const fallbackLogo = "/vercel.svg";
 export default function TokenDetailPage() {
   const router = useRouter();
   const params = useParams();
+  if (!params) {
+    return <div className="text-center py-8">Invalid token symbol.</div>;
+  }
   const symbolParam = params.symbol;
   let symbol = symbolParam;
   if (Array.isArray(symbol)) {
@@ -86,15 +90,17 @@ export default function TokenDetailPage() {
       <Head>
         <title>{displaySymbol} | Solana Portfolio</title>
       </Head>
-      <div className="flex flex-col items-center justify-center min-h-screen bg-transparent gap-8 py-8">
-        <div className="w-full max-w-xl flex flex-col gap-6">
+      <div className="relative flex flex-col items-center justify-center min-h-screen bg-[#eaf6ff] gap-8 py-8 overflow-hidden">
+        <FloatingShapes />
+        {/* <h1 className="text-4xl font-black mb-16 text-center">{displaySymbol} Details</h1>
+        <Banner className="rounded-none max-w-2xl mx-auto w-full mb-16">{name}</Banner> */}
+        <div className="w-full max-w-xl flex flex-col gap-6 z-10">
           <button
-            className="mb-2 bg-blue-400 border-2 border-black text-black rounded-lg px-6 py-2 text-lg font-extrabold shadow-[2px_2px_0_0_#000] hover:bg-blue-300 transition self-start"
+            className="mb-2 bg-blue-400 border-2 border-black text-black rounded-none px-6 py-2 text-lg font-extrabold shadow-[2px_2px_0_0_#000] hover:bg-blue-300 transition self-start"
             onClick={() => router.push("/tokens")}
           >
             ← Back
           </button>
-          <Banner className="mb-0">{name}</Banner>
           <OutlinedPanel className="flex flex-col items-center gap-4">
             <Image
               src={imgSrc}

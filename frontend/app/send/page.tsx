@@ -4,6 +4,10 @@ import { useTokenBalances } from "@/hooks/useTokenBalances";
 import { useTokenList } from "@/hooks/useTokenList";
 import { useWallet, useConnection } from "@solana/wallet-adapter-react";
 import { PublicKey, SystemProgram, Transaction, LAMPORTS_PER_SOL } from "@solana/web3.js";
+import NeobrutalCard from "@/components/ui/NeobrutalCard";
+import Banner from "@/components/ui/Banner";
+import FloatingShapes from "@/components/ui/FloatingShapes";
+import Button from "@/components/ui/Button";
 
 const WSOL_MINT = "So11111111111111111111111111111111111111112";
 
@@ -113,14 +117,20 @@ const SendPage = () => {
   };
 
   return (
-    <main className="flex flex-col items-center justify-center min-h-screen w-full gap-8 py-8">
-      <h1 className="text-4xl font-black mb-6">Send Tokens</h1>
-      <div className="w-full max-w-2xl flex flex-col gap-6">
-        <div className="bg-white border-4 border-black rounded-2xl shadow-[8px_8px_0_0_#000] p-8 flex flex-col items-center justify-center gap-6">
-          <form className="flex flex-col gap-4 w-full max-w-md" onSubmit={e => { e.preventDefault(); handleSend(); }}>
+    <main className="relative flex flex-col items-center justify-center min-h-screen w-full gap-8 py-8 bg-[#eaf6ff] overflow-hidden">
+      <FloatingShapes />
+      <h1 className="text-4xl font-black mb-2 z-10">Send Tokens</h1>
+      <Banner className="z-10 max-w-xl mx-auto text-lg rounded-none">Send tokens to any address on Solana. Choose a token, enter the recipient, and amount.</Banner>
+      <div className="w-full max-w-2xl flex flex-col gap-10 items-center z-10">
+        <NeobrutalCard
+          className="bg-white border-black shadow-[8px_8px_0_0_#000] hover:shadow-[6px_6px_0_0_#000] transition-all duration-200 w-full"
+          rounded="rounded-none"
+          padding="p-8 sm:p-10"
+        >
+          <form className="flex flex-col gap-6 w-full max-w-lg mx-auto" onSubmit={e => { e.preventDefault(); handleSend(); }}>
             <label className="font-mono text-lg">Token
               <select
-                className="w-full mt-1 p-2 border-2 border-black rounded-lg font-mono"
+                className="w-full mt-1 p-2 border-2 border-black rounded-none font-mono"
                 value={selectedMint}
                 onChange={e => setSelectedMint(e.target.value)}
               >
@@ -137,7 +147,7 @@ const SendPage = () => {
             </label>
             <label className="font-mono text-lg">Recipient Address
               <input
-                className="w-full mt-1 p-2 border-2 border-black rounded-lg font-mono"
+                className="w-full mt-1 p-2 border-2 border-black rounded-none font-mono"
                 type="text"
                 value={recipient}
                 onChange={e => setRecipient(e.target.value)}
@@ -147,7 +157,7 @@ const SendPage = () => {
             </label>
             <label className="font-mono text-lg">Amount
               <input
-                className="w-full mt-1 p-2 border-2 border-black rounded-lg font-mono"
+                className="w-full mt-1 p-2 border-2 border-black rounded-none font-mono"
                 type="number"
                 min="0"
                 value={amount}
@@ -156,16 +166,18 @@ const SendPage = () => {
                 disabled={loading}
               />
             </label>
-            <button
+            <Button
               type="submit"
-              className="mt-4 bg-blue-400 border-2 border-black text-black rounded-lg px-6 py-2 text-lg font-extrabold shadow-[2px_2px_0_0_#000] hover:bg-blue-300 transition disabled:opacity-60"
+              variant="accent"
+              size="lg"
+              className="mt-4 border-black shadow-[2px_2px_0_0_#000] hover:shadow-[4px_4px_0_0_#000] rounded-none w-full text-xl font-black"
               disabled={loading}
             >
               {loading ? "Sending..." : "Send"}
-            </button>
+            </Button>
             {message && <div className="mt-2 text-center font-mono text-base">{message}</div>}
           </form>
-        </div>
+        </NeobrutalCard>
       </div>
     </main>
   );

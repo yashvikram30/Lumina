@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { useTokenBalances } from "@/hooks/useTokenBalances";
 import { useTokenList } from "@/hooks/useTokenList";
 import { useTokenPrices } from "@/hooks/useTokenPrices";
@@ -7,6 +7,8 @@ import Banner from "@/components/ui/Banner";
 import Badge from "@/components/ui/Badge";
 import OutlinedPanel from "@/components/ui/OutlinedPanel";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
+import { LineChart, Line, XAxis, YAxis, Tooltip as LineTooltip } from "recharts";
+import { useTokenPriceHistory } from "@/hooks/useTokenPriceHistory";
 
 const PIE_COLORS = [
   "#fde047", // yellow
@@ -34,17 +36,39 @@ const COINGECKO_MINTS: Record<string, string> = {
 const PortfolioAnalytics: React.FC = () => {
   const tokens = useTokenBalances();
   const { tokens: tokenList, loading: loadingList } = useTokenList();
-  const mintAddresses = tokens.map((t) => t.mint);
+  const mintAddresses = useMemo(() => tokens.map((t) => t.mint), [tokens]);
   const prices = useTokenPrices(mintAddresses);
 
   // 24h price state
   const [prices24h, setPrices24h] = useState<{ [mint: string]: number }>({});
   const [loading24h, setLoading24h] = useState(false);
+  const [error24h, setError24h] = useState<string | null>(null);
+  const [retried24h, setRetried24h] = useState(false);
 
-  // Fetch 24h-ago prices for supported tokens
-  useEffect(() => {
-    const fetch24hPrices = async () => {
-      setLoading24h(true);
+  // Retry handler for historical fetch
+  const handleRetryHistory = () => {
+    setHistoryError(null);
+    setHistoryLoaded(false);
+    setRetriedHistory(false);
+    setPortfolioHistory([]);
+    setHistoryLoading(false);
+    fetchAllHistories();
+  };
+
+  // Retry handler for 24h fetch
+  const handleRetry24h = () => {
+    setError24h(null);
+    setRetried24h(false);
+    setPrices24h({});
+    setLoading24h(false);
+    fetch24hPrices();
+  };
+
+  // Fetch 24h-ago prices for supported tokens (on mount only, retry on user action)
+  const fetch24hPrices = useCallback(async () => {
+    setLoading24h(true);
+    setError24h(null);
+    try {
       const entries = await Promise.all(
         mintAddresses.map(async (address) => {
           const coingeckoId = COINGECKO_MINTS[address];
@@ -53,8 +77,8 @@ const PortfolioAnalytics: React.FC = () => {
               const res = await fetch(
                 `https://api.coingecko.com/api/v3/coins/${coingeckoId}/market_chart?vs_currency=usd&days=2&interval=daily`
               );
+              if (!res.ok) throw new Error("Failed to fetch");
               const data = await res.json();
-              // Get the price from 24h ago (first entry)
               const price24h = Array.isArray(data.prices) && data.prices.length > 0 ? data.prices[0][1] : 0;
               return [address, price24h];
             } catch {
@@ -66,20 +90,80 @@ const PortfolioAnalytics: React.FC = () => {
       );
       setPrices24h(Object.fromEntries(entries));
       setLoading24h(false);
-    };
-    if (mintAddresses.length > 0) fetch24hPrices();
-  }, [mintAddresses.join(",")]);
+    } catch (err) {
+      setError24h("Failed to fetch 24h prices");
+      setLoading24h(false);
+    }
+  }, [mintAddresses]);
+
+  useEffect(() => {
+    fetch24hPrices();
+  }, [fetch24hPrices]);
 
   // Loading state for prices
   const loadingPrices = mintAddresses.length > 0 && mintAddresses.some((mint) => prices[mint] === undefined);
-
-  if (loadingList || loadingPrices || loading24h) return <div className="text-center text-lg font-semibold py-8">Loading portfolio analytics...</div>;
-  if (!tokens.length) return <div className="text-center text-lg font-semibold py-8">No tokens found.</div>;
 
   // Helper to get token meta
   const getTokenMeta = (mint: string) => {
     return tokenList.find((t) => t.address.toLowerCase() === mint.toLowerCase());
   };
+
+  // --- Historical Portfolio Value State ---
+  const [historyLoading, setHistoryLoading] = useState(false);
+  const [portfolioHistory, setPortfolioHistory] = useState<{ time: number; value: number }[]>([]);
+  const [historyLoaded, setHistoryLoaded] = useState(false);
+  const [historyError, setHistoryError] = useState<string | null>(null);
+  const [retriedHistory, setRetriedHistory] = useState(false);
+
+  // Fetch all histories for all tokens with a valid Coingecko ID (on mount only, retry on user action)
+  const fetchAllHistories = useCallback(async () => {
+    setHistoryLoading(true);
+    setHistoryError(null);
+    try {
+      const supportedTokens = tokens.filter(t => {
+        const coingeckoId = COINGECKO_MINTS[t.mint];
+        return !!coingeckoId;
+      });
+      const results = await Promise.all(
+        supportedTokens.map(async t => {
+          const coingeckoId = COINGECKO_MINTS[t.mint];
+          if (!coingeckoId) return [];
+          try {
+            const res = await fetch(`https://api.coingecko.com/api/v3/coins/${coingeckoId}/market_chart?vs_currency=usd&days=30`);
+            if (!res.ok) throw new Error("Failed to fetch");
+            const data = await res.json();
+            return (data.prices || []).map(([ts, price]: [number, number]) => ({ time: Math.floor(ts / 1000), value: price, amount: t.amount }));
+          } catch {
+            return [];
+          }
+        })
+      );
+      const byDate: Record<number, number> = {};
+      results.forEach(tokenHistory => {
+        tokenHistory.forEach((entry: { time: number; value: number; amount: number }) => {
+          const { time, value, amount } = entry;
+          if (!byDate[time]) byDate[time] = 0;
+          byDate[time] += value * amount;
+        });
+      });
+      const historyArr = Object.entries(byDate)
+        .map(([time, value]) => ({ time: Number(time), value }))
+        .sort((a, b) => a.time - b.time);
+      setPortfolioHistory(historyArr);
+      setHistoryLoaded(true);
+      setHistoryLoading(false);
+    } catch (err) {
+      setHistoryError("Failed to fetch historical prices");
+      setHistoryLoading(false);
+    }
+  }, [tokens]);
+
+  useEffect(() => {
+    fetchAllHistories();
+  }, [fetchAllHistories]);
+
+  if (loadingList || loadingPrices || loading24h) return <div className="text-center text-lg font-semibold py-8">Loading portfolio analytics...</div>;
+  if (!tokens.length) return <div className="text-center text-lg font-semibold py-8">No tokens found.</div>;
 
   // Calculate per-token and total values
   let totalValue = 0;
@@ -128,7 +212,7 @@ const PortfolioAnalytics: React.FC = () => {
 
   return (
     <div className="w-full max-w-2xl mx-auto mt-8 mb-4 flex flex-col items-center gap-4">
-      <Banner>Portfolio Analytics</Banner>
+      {/* <Banner>Portfolio Analytics</Banner> */}
       {allPricesZero && (
         <div className="w-full text-center text-red-600 font-bold mb-2">
           Warning: No price data available for your tokens. Portfolio value may be inaccurate.
@@ -181,6 +265,30 @@ const PortfolioAnalytics: React.FC = () => {
             </ResponsiveContainer>
           ) : (
             <div className="w-40 h-40 bg-gray-100 border-2 border-dashed border-gray-300 flex items-center justify-center text-gray-400">No data</div>
+          )}
+        </div>
+      </OutlinedPanel>
+      <OutlinedPanel className="w-full mt-2">
+        <div className="text-lg font-semibold mb-2 text-black">Portfolio Value History (30d)</div>
+        <div className="w-full flex justify-center items-center">
+          {historyLoading ? (
+            <div className="w-full text-center py-8">Loading portfolio history...</div>
+          ) : historyError ? (
+            <div className="w-full text-center py-8 text-red-600">
+              {historyError}
+              <button onClick={handleRetryHistory} className="ml-4 px-4 py-2 bg-pink-200 border-2 border-black rounded font-bold">Retry</button>
+            </div>
+          ) : portfolioHistory.length > 0 ? (
+            <ResponsiveContainer width="100%" height={220}>
+              <LineChart data={portfolioHistory} margin={{ top: 8, right: 16, left: 0, bottom: 8 }}>
+                <XAxis dataKey="time" tickFormatter={ts => new Date(ts * 1000).toLocaleDateString()} fontSize={12} />
+                <YAxis dataKey="value" domain={["auto", "auto"]} fontSize={12} tickFormatter={v => `$${v.toLocaleString(undefined, { maximumFractionDigits: 0 })}`} />
+                <LineTooltip labelFormatter={ts => new Date(ts * 1000).toLocaleDateString()} formatter={(v: number) => `$${v.toLocaleString(undefined, { maximumFractionDigits: 2 })}`} />
+                <Line type="monotone" dataKey="value" stroke="#6366f1" strokeWidth={2} dot={false} />
+              </LineChart>
+            </ResponsiveContainer>
+          ) : (
+            <div className="w-full text-center py-8 text-gray-400">No historical data available for your tokens.</div>
           )}
         </div>
       </OutlinedPanel>

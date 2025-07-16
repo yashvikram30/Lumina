@@ -37,7 +37,21 @@ export function useTokenBalances() {
                 amount: solLamports / 1e9, // Convert lamports to SOL
                 decimals: 9,
             };
-            setTokens([solToken, ...tokenList]);
+            const newTokens = [solToken, ...tokenList];
+            // Deep equality check
+            const isEqual = (
+                a: { mint: string; amount: number; decimals: number }[],
+                b: { mint: string; amount: number; decimals: number }[]
+            ) => {
+                if (a.length !== b.length) return false;
+                for (let i = 0; i < a.length; i++) {
+                    if (a[i].mint !== b[i].mint || a[i].amount !== b[i].amount || a[i].decimals !== b[i].decimals) {
+                        return false;
+                    }
+                }
+                return true;
+            };
+            setTokens(prevTokens => (isEqual(prevTokens, newTokens) ? prevTokens : newTokens));
         };
 
         fetchTokens();

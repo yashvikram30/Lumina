@@ -8,6 +8,7 @@ export interface ParsedTransaction {
   amount: number;
   from: string;
   to: string;
+  side: 'buy' | 'sell' | 'transfer' | 'unknown'; // new field
 }
 
 // Map known native mints/addresses to symbols/names
@@ -52,6 +53,11 @@ export function useTransactionHistory(address: string | undefined) {
           // 1. SPL token transfers (Solana, Wormhole, etc)
           if (Array.isArray(tx.tokenTransfers) && tx.tokenTransfers.length > 0) {
             const meta = tx.tokenTransfers[0];
+            // Classify side
+            let side: 'buy' | 'sell' | 'transfer' | 'unknown' = 'unknown';
+            if (meta.fromUserAccount === address) side = 'sell';
+            else if (meta.toUserAccount === address) side = 'buy';
+            // TODO: Add transfer/unknown logic if needed
             txs.push({
               signature: tx.signature,
               date: tx.timestamp ? new Date(tx.timestamp * 1000).toLocaleString() : "-",
@@ -60,6 +66,7 @@ export function useTransactionHistory(address: string | undefined) {
               amount: meta.tokenAmount || 0,
               from: meta.fromUserAccount || "-",
               to: meta.toUserAccount || "-",
+              side,
             });
             return; // prioritize token transfer
           }
@@ -69,6 +76,10 @@ export function useTransactionHistory(address: string | undefined) {
             let asset = nt.asset || nt.symbol || "SOL";
             asset = asset.toUpperCase();
             const assetMeta = NATIVE_ASSET_MAP[asset] || { symbol: asset, name: asset };
+            // Classify side
+            let side: 'buy' | 'sell' | 'transfer' | 'unknown' = 'unknown';
+            if (nt.fromUserAccount === address) side = 'sell';
+            else if (nt.toUserAccount === address) side = 'buy';
             txs.push({
               signature: tx.signature,
               date: tx.timestamp ? new Date(tx.timestamp * 1000).toLocaleString() : "-",
@@ -77,6 +88,7 @@ export function useTransactionHistory(address: string | undefined) {
               amount: nt.amount || 0,
               from: nt.fromUserAccount || nt.from || "-",
               to: nt.toUserAccount || nt.to || "-",
+              side,
             });
             return;
           }
@@ -89,6 +101,7 @@ export function useTransactionHistory(address: string | undefined) {
             amount: 0,
             from: "-",
             to: "-",
+            side: 'unknown',
           });
         });
         setTransactions(txs);

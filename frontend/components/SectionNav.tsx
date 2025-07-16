@@ -13,17 +13,18 @@ const SECTIONS = [
 const SectionNav: React.FC = () => {
   const pathname = usePathname();
   return (
-    <nav className="w-full flex justify-center bg-yellow-100 border-b-4 border-black shadow-neobrutalism z-20 top-[64px]">
-      <ul className="flex gap-4 py-3">
+    <nav className="w-full flex justify-center" style={{ background: '#e0f0ff', borderBottom: '4px solid #000', boxShadow: '6px 6px 0 0 #000', borderRadius: 0, zIndex: 20, top: 64, padding: '0 0 0 0' }}>
+      <ul className="flex gap-4 py-2">
         {SECTIONS.map((section) => (
-          <li key={section.href}>
+          <li key={section.href} className="m-0">
             <Link
               href={section.href}
-              className={`px-6 py-2 rounded-2xl border-4 border-black font-extrabold text-lg transition-all shadow-[3px_3px_0_0_#000] ${
-                pathname === section.href
-                  ? "bg-yellow-300 text-black scale-105"
-                  : "bg-white text-neutral-700 hover:bg-yellow-200"
-              }`}
+              className={`px-6 py-2 border-4 border-black font-extrabold text-base transition-all shadow-[4px_4px_0_0_#000] bg-[#ff6b6b] text-black flex items-center justify-center select-none` +
+                (pathname === section.href
+                  ? " scale-105 bg-[#ff6b6b] text-black"
+                  : " bg-[#ff6b6b] text-black hover:bg-[#ff8787]")
+              }
+              style={{ borderRadius: 0, minWidth: 120, boxShadow: '4px 4px 0 #000', background: '#ff6b6b' }}
             >
               {section.label}
             </Link>

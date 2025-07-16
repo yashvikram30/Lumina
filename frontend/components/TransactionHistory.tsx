@@ -7,7 +7,6 @@ import Image from "next/image";
 import Badge from "@/components/ui/Badge";
 import Banner from "@/components/ui/Banner";
 import NeobrutalCard from "@/components/ui/NeobrutalCard";
-import CardCustomisable from "@/components/ui/CardCustomisable";
 
 const fallbackLogo = "/vercel.svg";
 const localImages = ["sui", "polygon", "eth", "bitcoin", "sol", "usdc"];
@@ -94,20 +93,13 @@ const TransactionHistory: React.FC = () => {
   if (!transactions.length) return <div className="text-center py-8">No transactions found.</div>;
 
   return (
-    <div className="w-full max-w-7xl mx-auto mt-8 mb-4">
-      <Banner>Transaction History</Banner>
-      <CardCustomisable
-        width="max-w-7xl w-full"
+    <div className="w-full max-w-5xl px-4 mx-auto mt-8 mb-4">
+      <h1 className="text-4xl font-black mb-16 text-center">Transaction History</h1>
+      <Banner className="rounded-none max-w-2xl mx-auto w-full mb-16">View all your recent transactions, including sends and receives, in one place.</Banner>
+      <NeobrutalCard
+        className="bg-white border-black shadow-[8px_8px_0_0_#000] hover:shadow-[6px_6px_0_0_#000] mx-auto"
+        rounded="rounded-none"
         padding="p-8"
-        border="border-4 border-black"
-        rounded="rounded-2xl"
-        bg="bg-gradient-to-br from-yellow-200 via-pink-200 to-blue-200"
-        shadow="shadow-[8px_8px_0_0_#000] hover:shadow-[16px_16px_0_0_#000]"
-        accentCorner={true}
-        accentColor="bg-pink-400"
-        accentSize="w-8 h-8"
-        accentBorder="border-b-4 border-r-4 border-black"
-        className="mx-auto"
       >
         {/* Summary */}
         <div className="w-full flex flex-col md:flex-row items-center justify-between gap-2 px-2 pt-2 pb-2">
@@ -133,7 +125,7 @@ const TransactionHistory: React.FC = () => {
                 <th className="px-2 py-2 border-b-2 border-black text-left text-base">Amount</th>
                 <th className="px-2 py-2 border-b-2 border-black text-left text-base">From</th>
                 <th className="px-2 py-2 border-b-2 border-black text-left text-base">To</th>
-                <th className="px-2 py-2 border-b-2 border-black text-left text-base">Explorer</th>
+                <th className="px-2 py-2 border-b-2 border-black text-center text-base w-40 whitespace-nowrap">Explorer</th>
               </tr>
             </thead>
             <tbody>
@@ -146,8 +138,10 @@ const TransactionHistory: React.FC = () => {
                     style={{ animation: `fadeIn 0.4s ${idx * 0.04}s both` }}
                   >
                     <td className="px-2 py-2 border-b border-black font-mono text-xs whitespace-nowrap">{tx.date}</td>
-                    <td className="px-2 py-2 border-b border-black font-bold">
-                      <Badge color={typeColors[tx.type] || "bg-gray-200"}>{tx.type}</Badge>
+                    <td className="px-2 py-2 border-b border-black font-bold text-center">
+                      <span className={`inline-block px-3 py-1 border-2 border-black rounded-full font-bold text-xs shadow-[1.5px_1.5px_0_0_#000] ${typeColors[tx.type] || "bg-gray-200"}`}>
+                        {tx.type}
+                      </span>
                     </td>
                     <td className="px-2 py-2 border-b border-black font-mono truncate max-w-[80px]" title={tokenMeta?.name || tx.token}>
                       {tokenMeta?.name || tokenMeta?.symbol || tx.token}
@@ -160,7 +154,7 @@ const TransactionHistory: React.FC = () => {
                         href={explorerUrl(tx.signature)}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="underline text-blue-600 hover:text-blue-900 font-mono text-xs"
+                        className="inline-block px-4 py-1 font-bold font-mono text-xs bg-yellow-200 border-2 border-black rounded shadow-[2px_2px_0_0_#000] hover:bg-pink-200 hover:text-black transition-all duration-150"
                         title="View on Solscan"
                       >
                         View
@@ -172,7 +166,7 @@ const TransactionHistory: React.FC = () => {
             </tbody>
           </table>
         </div>
-      </CardCustomisable>
+      </NeobrutalCard>
       <style jsx global>{`
         @keyframes fadeIn {
           from { opacity: 0; transform: translateY(12px); }
