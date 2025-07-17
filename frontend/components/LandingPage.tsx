@@ -126,7 +126,7 @@ const LandingPage: React.FC = () => {
               </div>
               <span className="logo-text">Lumina</span>
             </a>
-            <div className="nav-buttons" style={{ display: 'flex', gap: '16px', justifyContent: 'flex-end' }}>
+            <div className="nav-buttons hidden md:flex" style={{ gap: '16px', justifyContent: 'flex-end' }}>
               <a
                 href="https://github.com/yashvikram30/Lumina"
                 target="_blank"
