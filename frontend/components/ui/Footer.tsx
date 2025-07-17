@@ -26,7 +26,7 @@ const Footer: React.FC = () => (
         ))}
       </div>
       <div className="text-center">
-        <p>&copy; 2024 Lumina. Built with 🔥 for crypto degens.</p>
+        <p>&copy; 2025 Lumina. Built with 🔥 for crypto degens.</p>
       </div>
     </div>
   </footer>

@@ -6,6 +6,8 @@ import Button from "@/components/ui/Button";
 import Banner from "@/components/ui/Banner";
 import FloatingShapes from "@/components/ui/FloatingShapes";
 import { QRCodeSVG } from "qrcode.react";
+import Footer from "@/components/ui/Footer";
+
 
 const ReceivePage = () => {
   const { publicKey } = useWallet();
@@ -24,7 +26,8 @@ const ReceivePage = () => {
   };
 
   return (
-    <main className="relative flex flex-col items-center justify-center min-h-screen w-full gap-8 py-8 bg-[#eaf6ff] overflow-hidden">
+    <>
+    <main className="relative flex flex-col items-center justify-center min-h-screen w-full gap-8 py-8 bg-[#eaf6ff]">
       <FloatingShapes />
       <h1 className="text-4xl font-black mb-2 z-10">Receive Tokens</h1>
       <Banner className="z-10 max-w-xl mx-auto text-lg rounded-none">Share your address or QR code to receive tokens.</Banner>
@@ -68,7 +71,10 @@ const ReceivePage = () => {
           )}
         </NeobrutalCard>
       </div>
+      
     </main>
+    <Footer />
+    </>
   );
 };
 

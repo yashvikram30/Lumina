@@ -8,6 +8,7 @@ import NeobrutalCard from "@/components/ui/NeobrutalCard";
 import Banner from "@/components/ui/Banner";
 import FloatingShapes from "@/components/ui/FloatingShapes";
 import Button from "@/components/ui/Button";
+import Footer from "@/components/ui/Footer";
 
 const WSOL_MINT = "So11111111111111111111111111111111111111112";
 
@@ -117,7 +118,8 @@ const SendPage = () => {
   };
 
   return (
-    <main className="relative flex flex-col items-center justify-center min-h-screen w-full gap-8 py-8 bg-[#eaf6ff] overflow-hidden">
+    <>
+    <main className="relative flex flex-col items-center justify-center min-h-screen w-full gap-8 py-8 bg-[#eaf6ff]">
       <FloatingShapes />
       <h1 className="text-4xl font-black mb-2 z-10">Send Tokens</h1>
       <Banner className="z-10 max-w-xl mx-auto text-lg rounded-none">Send tokens to any address on Solana. Choose a token, enter the recipient, and amount.</Banner>
@@ -180,6 +182,8 @@ const SendPage = () => {
         </NeobrutalCard>
       </div>
     </main>
+    <Footer />
+    </>
   );
 };
 

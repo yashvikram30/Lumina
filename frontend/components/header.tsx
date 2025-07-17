@@ -39,7 +39,7 @@ const Header = () => (
           <i className="fas fa-star" style={{ fontSize: '1.2rem', color: '#000' }}></i>
           Star on GitHub
         </a>
-        <div className="brutal-card mr-26" style={{ background: '#6C3DF4', padding: '0.5rem 1.5rem', display: 'flex', alignItems: 'center', boxShadow: '6px 6px 0 #000', borderRadius: '12px', border: '4px solid #000' }}>
+        <div className="brutal-card mr-26 z-10" style={{ background: '#6C3DF4', padding: '0.5rem 1.5rem', display: 'flex', alignItems: 'center', boxShadow: '6px 6px 0 #000', borderRadius: '12px', border: '4px solid #000' }}>
           <WalletButton />
         </div>
       </div>

@@ -13,7 +13,7 @@ const SECTIONS = [
 const SectionNav: React.FC = () => {
   const pathname = usePathname();
   return (
-    <nav className="w-full flex justify-center" style={{ background: '#e0f0ff', borderBottom: '4px solid #000', boxShadow: '6px 6px 0 0 #000', borderRadius: 0, zIndex: 20, top: 64, padding: '0 0 0 0' }}>
+    <nav className="w-full flex justify-center top-0 z-0" style={{ background: '#e0f0ff', borderBottom: '4px solid #000', boxShadow: '6px 6px 0 0 #000', borderRadius: 0, top: 64, padding: '0 0 0 0' }}>
       <ul className="flex gap-4 py-2">
         {SECTIONS.map((section) => (
           <li key={section.href} className="m-0">
