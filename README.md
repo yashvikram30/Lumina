@@ -12,7 +12,7 @@ Lumina is a powerful, beautiful, and brutally honest multi-chain crypto portfoli
 - Mobile-friendly responsive design
 - Smart notifications (coming soon)
 - Export capabilities
-- Fort Knox security: your keys, your crypto
+
 
 ---
 
