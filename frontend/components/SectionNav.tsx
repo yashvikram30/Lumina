@@ -2,6 +2,9 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import dynamic from "next/dynamic";
+
+const WalletButton = dynamic(() => import("./WalletButton"), { ssr: false });
 
 const SECTIONS = [
   { href: "/portfolio", label: "Portfolio Analytics", icon: "fas fa-chart-pie" },
@@ -48,7 +51,7 @@ const SectionNav: React.FC = () => {
       <div className={`md:hidden fixed top-0 left-0 h-full w-64 bg-[#e0f0ff] border-r-4 border-black shadow-[8px_0_0_0_#000] z-50 transform transition-transform duration-300 ${
         isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
       }`}>
-        <div className="p-6">
+        <div className="p-6 flex flex-col h-full">
           <div className="flex items-center gap-3 mb-8">
             <div className="w-10 h-10 bg-[#FF6B6B] border-4 border-black shadow-[4px_4px_0_0_#000] flex items-center justify-center text-white text-lg -rotate-6">
               <i className="fas fa-chart-line"></i>
@@ -56,7 +59,14 @@ const SectionNav: React.FC = () => {
             <span className="text-xl font-bold text-black uppercase tracking-wider">Lumina</span>
           </div>
           
-          <nav>
+          {/* Wallet Button at top */}
+          <div className="mb-6">
+            <div className="bg-[#6C3DF4] border-4 border-black shadow-[4px_4px_0_0_#000] p-3" style={{ borderRadius: 0 }}>
+              <WalletButton />
+            </div>
+          </div>
+          
+          <nav className="flex-1">
             <ul className="space-y-4">
               {SECTIONS.map((section) => (
                 <li key={section.href}>

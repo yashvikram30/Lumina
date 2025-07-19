@@ -31,7 +31,7 @@ const ReceivePage = () => {
       <div className="hidden md:block"><FloatingShapes /></div>
       <h1 className="text-2xl md:text-4xl font-black mb-2 z-10">Receive Tokens</h1>
       <Banner className="z-10 max-w-xl mx-auto text-base md:text-lg rounded-none">Share your address or QR code to receive tokens.</Banner>
-      <div className="w-full max-w-2xl flex flex-col gap-8 md:gap-14 items-center justify-center z-10">
+      <div className="w-full max-w-2xl flex flex-col md:flex-row gap-8 md:gap-14 items-center justify-center z-10">
         {/* Copy Address Card */}
         <NeobrutalCard
           className="bg-white border-black shadow-[8px_8px_0_0_#000] hover:shadow-[6px_6px_0_0_#000] transition-all duration-200 w-full md:flex-[1.5] md:min-w-[390px] md:mr-20"
