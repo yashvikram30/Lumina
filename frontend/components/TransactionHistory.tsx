@@ -93,21 +93,19 @@ const TransactionHistory: React.FC = () => {
   if (!transactions.length) return <div className="text-center py-8">No transactions found.</div>;
 
   return (
-    <div className="w-full max-w-5xl px-4 mx-auto mt-8 mb-4">
-      <h1 className="text-4xl font-black mb-16 text-center">Transaction History</h1>
-      <Banner className="rounded-none max-w-2xl mx-auto w-full mb-16">View all your recent transactions, including sends and receives, in one place.</Banner>
+    <div className="w-full max-w-5xl px-2 md:px-4 mx-auto">
       <NeobrutalCard
         className="bg-white border-black shadow-[8px_8px_0_0_#000] hover:shadow-[6px_6px_0_0_#000] mx-auto"
         rounded="rounded-none"
-        padding="p-8"
+        padding="p-4 md:p-8"
       >
         {/* Summary */}
         <div className="w-full flex flex-col md:flex-row items-center justify-between gap-2 px-2 pt-2 pb-2">
-          <div className="font-bold text-lg text-black">Total: <span className="text-blue-700">{transactions.length}</span> txns</div>
-          {lastUpdated && <div className="text-sm text-neutral-600">Last updated: {lastUpdated}</div>}
+          <div className="font-bold text-base md:text-lg text-black">Total: <span className="text-blue-700">{transactions.length}</span> txns</div>
+          {lastUpdated && <div className="text-xs md:text-sm text-neutral-600">Last updated: {lastUpdated}</div>}
         </div>
-        <div className="w-full">
-          <table className="w-full border-collapse text-black table-fixed">
+        <div className="w-full overflow-x-auto">
+          <table className="w-full border-collapse text-black table-fixed min-w-[600px]">
             <colgroup>
               <col style={{ width: '18%' }} />
               <col style={{ width: '13%' }} />
@@ -119,13 +117,13 @@ const TransactionHistory: React.FC = () => {
             </colgroup>
             <thead className="sticky top-0 z-10">
               <tr className="bg-yellow-200">
-                <th className="px-2 py-2 border-b-2 border-black text-left text-base">Date</th>
-                <th className="px-2 py-2 border-b-2 border-black text-left text-base">Type</th>
-                <th className="px-2 py-2 border-b-2 border-black text-left text-base">Token</th>
-                <th className="px-2 py-2 border-b-2 border-black text-left text-base">Amount</th>
-                <th className="px-2 py-2 border-b-2 border-black text-left text-base">From</th>
-                <th className="px-2 py-2 border-b-2 border-black text-left text-base">To</th>
-                <th className="px-2 py-2 border-b-2 border-black text-center text-base w-40 whitespace-nowrap">Explorer</th>
+                <th className="px-1 md:px-2 py-2 border-b-2 border-black text-left text-xs md:text-base">Date</th>
+                <th className="px-1 md:px-2 py-2 border-b-2 border-black text-left text-xs md:text-base">Type</th>
+                <th className="px-1 md:px-2 py-2 border-b-2 border-black text-left text-xs md:text-base">Token</th>
+                <th className="px-1 md:px-2 py-2 border-b-2 border-black text-left text-xs md:text-base">Amount</th>
+                <th className="px-1 md:px-2 py-2 border-b-2 border-black text-left text-xs md:text-base">From</th>
+                <th className="px-1 md:px-2 py-2 border-b-2 border-black text-left text-xs md:text-base">To</th>
+                <th className="px-1 md:px-2 py-2 border-b-2 border-black text-center text-xs md:text-base w-40 whitespace-nowrap">Explorer</th>
               </tr>
             </thead>
             <tbody>
@@ -137,24 +135,24 @@ const TransactionHistory: React.FC = () => {
                     className={`transition-all duration-200 ease-in-out hover:bg-yellow-100 ${idx % 2 === 0 ? "bg-blue-50" : "bg-pink-50"}`}
                     style={{ animation: `fadeIn 0.4s ${idx * 0.04}s both` }}
                   >
-                    <td className="px-2 py-2 border-b border-black font-mono text-xs whitespace-nowrap">{tx.date}</td>
-                    <td className="px-2 py-2 border-b border-black font-bold text-center">
-                      <span className={`inline-block px-3 py-1 border-2 border-black rounded-full font-bold text-xs shadow-[1.5px_1.5px_0_0_#000] ${typeColors[tx.type] || "bg-gray-200"}`}>
+                    <td className="px-1 md:px-2 py-2 border-b border-black font-mono text-xs whitespace-nowrap">{tx.date}</td>
+                    <td className="px-1 md:px-2 py-2 border-b border-black font-bold text-center">
+                      <span className={`inline-block px-2 md:px-3 py-1 border-2 border-black rounded-full font-bold text-xs shadow-[1.5px_1.5px_0_0_#000] ${typeColors[tx.type] || "bg-gray-200"}`}>
                         {tx.type}
                       </span>
                     </td>
-                    <td className="px-2 py-2 border-b border-black font-mono truncate max-w-[80px]" title={tokenMeta?.name || tx.token}>
+                    <td className="px-1 md:px-2 py-2 border-b border-black font-mono truncate max-w-[60px] md:max-w-[80px]" title={tokenMeta?.name || tx.token}>
                       {tokenMeta?.name || tokenMeta?.symbol || tx.token}
                     </td>
-                    <td className="px-2 py-2 border-b border-black font-mono text-right">{formatDisplayAmount(tx.amount, tx.token)}</td>
-                    <td className="px-2 py-2 border-b border-black font-mono text-xs truncate max-w-[80px]" title={tx.from}>{truncate(tx.from, 12)}</td>
-                    <td className="px-2 py-2 border-b border-black font-mono text-xs truncate max-w-[80px]" title={tx.to}>{truncate(tx.to, 12)}</td>
-                    <td className="px-2 py-2 border-b border-black text-center">
+                    <td className="px-1 md:px-2 py-2 border-b border-black font-mono text-right text-xs md:text-base">{formatDisplayAmount(tx.amount, tx.token)}</td>
+                    <td className="px-1 md:px-2 py-2 border-b border-black font-mono text-xs truncate max-w-[60px] md:max-w-[80px]" title={tx.from}>{truncate(tx.from, 8)}</td>
+                    <td className="px-1 md:px-2 py-2 border-b border-black font-mono text-xs truncate max-w-[60px] md:max-w-[80px]" title={tx.to}>{truncate(tx.to, 8)}</td>
+                    <td className="px-1 md:px-2 py-2 border-b border-black text-center">
                       <a
                         href={explorerUrl(tx.signature)}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-block px-4 py-1 font-bold font-mono text-xs bg-yellow-200 border-2 border-black rounded shadow-[2px_2px_0_0_#000] hover:bg-pink-200 hover:text-black transition-all duration-150"
+                        className="inline-block px-2 md:px-4 py-1 font-bold font-mono text-xs bg-yellow-200 border-2 border-black rounded shadow-[2px_2px_0_0_#000] hover:bg-pink-200 hover:text-black transition-all duration-150"
                         title="View on Solscan"
                       >
                         View

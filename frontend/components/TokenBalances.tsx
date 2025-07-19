@@ -101,7 +101,7 @@ const TokenBalances = () => {
   }
 
   return (
-    <div className="flex flex-col gap-6 md:gap-10 mt-8 md:mt-16 mx-auto max-w-2xl w-full items-center px-2 md:px-0">
+    <div className="flex flex-col gap-6 md:gap-10 mt-4 md:mt-8 mx-auto max-w-2xl w-full items-center px-2 md:px-0">
       {tokens.map((token, idx) => {
         const tokenMeta = getTokenMeta(token.mint);
         const cardColors = [
