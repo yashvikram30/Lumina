@@ -4,7 +4,7 @@ import "./globals.css";
 import WalletContextProvider from "@/components/WalletContextProvider";
 import "@solana/wallet-adapter-react-ui/styles.css";
 import AppGate from "@/components/AppGate";
-
+import { Analytics } from "@vercel/analytics/next"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -41,7 +41,7 @@ export default function RootLayout({
       >
         <WalletContextProvider network="mainnet-beta">
           <div className="min-h-screen flex flex-col bg-gradient-to-br from-yellow-200 via-pink-200 to-blue-200">
-            <AppGate>{children}</AppGate>
+            <AppGate>{children}<Analytics/></AppGate>
           </div>
         </WalletContextProvider>
       </body>
