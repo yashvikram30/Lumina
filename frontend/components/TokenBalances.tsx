@@ -87,7 +87,7 @@ const TokenBalances = () => {
         alt={symbol || "Unknown Token"}
         width={48}
         height={48}
-        className="w-16 h-16 rounded-full border-2 border-black object-cover shadow-[3px_3px_0_0_#000] mr-10"
+        className="w-12 h-12 md:w-16 md:h-16 rounded-full border-2 border-black object-cover shadow-[3px_3px_0_0_#000] mr-4 md:mr-10"
         onError={() => {
           if (imgSrc !== logoURI && logoURI) {
             setImgSrc(logoURI);
@@ -101,7 +101,7 @@ const TokenBalances = () => {
   }
 
   return (
-    <div className="flex flex-col gap-10 mt-16 mx-auto max-w-2xl w-full items-center">
+    <div className="flex flex-col gap-6 md:gap-10 mt-8 md:mt-16 mx-auto max-w-2xl w-full items-center px-2 md:px-0">
       {tokens.map((token, idx) => {
         const tokenMeta = getTokenMeta(token.mint);
         const cardColors = [
@@ -115,22 +115,22 @@ const TokenBalances = () => {
         return (
           <div
             key={token.mint}
-            className={`relative flex items-center w-full min-w-[340px] max-w-2xl px-12 py-10 border-4 border-black ${cardColor} shadow-[8px_8px_0_0_#000] transition-transform hover:scale-[1.02]`}
+            className={`relative flex flex-col md:flex-row items-center w-full min-w-[280px] md:min-w-[340px] max-w-2xl px-4 md:px-12 py-6 md:py-10 border-4 border-black ${cardColor} shadow-[8px_8px_0_0_#000] transition-transform hover:scale-[1.02]`}
             style={{ borderRadius: 0, cursor: 'pointer' }}
             onClick={() => router.push(`/token/${tokenMeta?.symbol?.toLowerCase()}`)}
           >
             {/* Accent corner */}
-            <div className="absolute top-0 left-0 w-12 h-12 bg-pink-400 border-b-4 border-r-4 border-black z-10" style={{ borderRadius: 0 }} />
-            <TokenImage symbol={tokenMeta?.symbol} logoURI={tokenMeta?.logoURI} style={{ width: 72, height: 72, marginRight: 32, borderRadius: 0, border: '4px solid #000', boxShadow: '4px 4px 0 #000' }} />
-            <div className="flex-1 flex flex-col justify-center min-w-0 gap-2 items-center">
-              <div className="text-4xl font-black text-black truncate mb-2" style={{ letterSpacing: 1 }}>{tokenMeta?.name || "Devnet Token"}</div>
-              <div className="flex items-center gap-4 mt-2">
-                <span className={`inline-block border-2 border-black px-8 py-3 text-2xl font-black shadow-[4px_4px_0_0_#000] bg-[#60a5fa] text-black`} style={{ borderRadius: 0 }}>{tokenMeta?.symbol || "Devnet"}</span>
-                <span className="text-2xl text-black font-mono truncate" style={{ letterSpacing: 1 }}>{token.amount} {tokenMeta?.symbol || ""}</span>
+            <div className="absolute top-0 left-0 w-8 h-8 md:w-12 md:h-12 bg-pink-400 border-b-4 border-r-4 border-black z-10" style={{ borderRadius: 0 }} />
+            <TokenImage symbol={tokenMeta?.symbol} logoURI={tokenMeta?.logoURI} style={{ width: 56, height: 56, marginRight: 16, borderRadius: 0, border: '4px solid #000', boxShadow: '4px 4px 0 #000' }} />
+            <div className="flex-1 flex flex-col justify-center min-w-0 gap-2 items-center text-center">
+              <div className="text-2xl md:text-4xl font-black text-black truncate mb-2" style={{ letterSpacing: 1 }}>{tokenMeta?.name || "Devnet Token"}</div>
+              <div className="flex flex-col md:flex-row items-center gap-2 md:gap-4 mt-2">
+                <span className={`hidden md:inline-block border-2 border-black px-4 md:px-8 py-2 md:py-3 text-lg md:text-2xl font-black shadow-[4px_4px_0_0_#000] bg-[#60a5fa] text-black`} style={{ borderRadius: 0 }}>{tokenMeta?.symbol || "Devnet"}</span>
+                <span className="text-lg md:text-2xl text-black font-mono truncate text-center" style={{ letterSpacing: 1 }}>{token.amount} {tokenMeta?.symbol || ""}</span>
               </div>
             </div>
             <button
-              className="ml-10 px-12 py-5 text-2xl font-black border-2 border-black bg-[#60a5fa] text-black shadow-[6px_6px_0_0_#000] transition hover:scale-105"
+              className="mt-4 md:mt-0 md:ml-10 px-6 md:px-12 py-3 md:py-5 text-lg md:text-2xl font-black border-2 border-black bg-[#60a5fa] text-black shadow-[6px_6px_0_0_#000] transition hover:scale-105"
               style={{ borderRadius: 0 }}
               onClick={e => { e.stopPropagation(); router.push(`/token/${tokenMeta?.symbol?.toLowerCase()}`); }}
             >
