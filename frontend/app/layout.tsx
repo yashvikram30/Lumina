@@ -38,9 +38,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased text-neutral-900 min-h-screen`}
         style={{ fontFamily: "'Space Grotesk', sans-serif" }}
-      >
+      ><Analytics/>
         <WalletContextProvider network="mainnet-beta">
-        <Analytics/>
+        
           <div className="min-h-screen flex flex-col bg-gradient-to-br from-yellow-200 via-pink-200 to-blue-200">
             <AppGate>{children}</AppGate>
           </div>
