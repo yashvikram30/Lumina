@@ -40,8 +40,9 @@ export default function RootLayout({
         style={{ fontFamily: "'Space Grotesk', sans-serif" }}
       >
         <WalletContextProvider network="mainnet-beta">
+        <Analytics/>
           <div className="min-h-screen flex flex-col bg-gradient-to-br from-yellow-200 via-pink-200 to-blue-200">
-            <AppGate>{children}<Analytics/></AppGate>
+            <AppGate>{children}</AppGate>
           </div>
         </WalletContextProvider>
       </body>
