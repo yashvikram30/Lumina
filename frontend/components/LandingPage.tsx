@@ -111,13 +111,25 @@ const LandingPage: React.FC = () => {
 
   return (
     <>
-      <div className="floating-shapes">
+      <div className="floating-shapes hidden md:flex">
         <div className="shape shape-1"></div>
         <div className="shape shape-2"></div>
         <div className="shape shape-3"></div>
         <div className="shape shape-4"></div>
       </div>
-      <header className="header">
+      <header className="header flex md:hidden">
+        <div className="container">
+          <nav className="flex justify-center items-center">
+            <a href="#" className="logo">
+              <div className="logo-icon">
+                <i className="fas fa-chart-line"></i>
+              </div>
+              <span className="logo-text text-center">Lumina</span>
+            </a>
+          </nav>
+        </div>
+      </header>
+      <header className="header hidden md:flex">
         <div className="container">
           <nav className="nav">
             <a href="#" className="logo">
