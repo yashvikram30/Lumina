@@ -90,24 +90,24 @@ export default function TokenDetailPage() {
       <Head>
         <title>{displaySymbol} | Solana Portfolio</title>
       </Head>
-      <div className="relative flex flex-col items-center justify-center min-h-screen bg-[#eaf6ff] gap-8 py-8 overflow-hidden">
-        <FloatingShapes />
+      <div className="relative flex flex-col items-center justify-center min-h-screen bg-[#eaf6ff] gap-6 md:gap-8 py-6 md:py-8 overflow-hidden px-4 md:px-0">
+        <div className="hidden md:block"><FloatingShapes /></div>
         {/* <h1 className="text-4xl font-black mb-16 text-center">{displaySymbol} Details</h1>
         <Banner className="rounded-none max-w-2xl mx-auto w-full mb-16">{name}</Banner> */}
-        <div className="w-full max-w-xl flex flex-col gap-6 z-10">
+        <div className="w-full max-w-xl flex flex-col gap-4 md:gap-6 z-10">
           <button
-            className="mb-2 bg-blue-400 border-2 border-black text-black rounded-none px-6 py-2 text-lg font-extrabold shadow-[2px_2px_0_0_#000] hover:bg-blue-300 transition self-start"
+            className="mb-2 bg-blue-400 border-2 border-black text-black rounded-none px-4 md:px-6 py-2 text-base md:text-lg font-extrabold shadow-[2px_2px_0_0_#000] hover:bg-blue-300 transition self-start"
             onClick={() => router.push("/tokens")}
           >
             ← Back
           </button>
-          <OutlinedPanel className="flex flex-col items-center gap-4">
+          <OutlinedPanel className="flex flex-col items-center gap-3 md:gap-4">
             <Image
               src={imgSrc}
               alt={displaySymbol}
-              width={64}
-              height={64}
-              className="mb-2"
+              width={48}
+              height={48}
+              className="mb-2 w-12 h-12 md:w-16 md:h-16"
               onError={() => {
                 if (imgSrc !== logoURI && logoURI) {
                   setImgSrc(logoURI);
@@ -116,11 +116,10 @@ export default function TokenDetailPage() {
                 }
               }}
             />
-            <div className="flex flex-row items-center gap-4">
+            <div className="flex flex-col md:flex-row items-center gap-2 md:gap-4 text-center md:text-left">
               <Badge color="bg-blue-200">{displaySymbol}</Badge>
-              <span className="font-mono text-black text-base">{mint}</span>
             </div>
-            <div className="text-lg font-mono text-black">Your Balance: <span className="font-extrabold">{balance}</span></div>
+            <div className="text-base md:text-lg font-mono text-black text-center">Your Balance: <span className="font-extrabold">{balance}</span></div>
           </OutlinedPanel>
           <OutlinedPanel className="w-full mt-2">
             <PriceChart symbol={displaySymbol} />

@@ -6,7 +6,18 @@ import SectionNav from "@/components/SectionNav";
 
 const Header = () => (
   <>
-    <header className="w-full border-b-4 border-black bg-[#FFE066] px-0 py-5 flex justify-between items-center" style={{ boxShadow: 'none' }}>
+    {/* Mobile Header - Centered Logo Only */}
+    <header className="md:hidden w-full border-b-4 border-black bg-[#FFE066] px-4 py-4 flex justify-center items-center" style={{ boxShadow: 'none' }}>
+      <div className="flex items-center gap-3">
+        <div className="logo-icon" style={{ width: 40, height: 40, background: '#FF6B6B', border: '4px solid #000', boxShadow: '4px 4px 0 #000', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 16, transform: 'rotate(-10deg)' }}>
+          <i className="fas fa-chart-line"></i>
+        </div>
+        <span className="logo-text" style={{ fontSize: '28px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 2 }}>Lumina</span>
+      </div>
+    </header>
+
+    {/* Desktop Header - Original Design */}
+    <header className="hidden md:flex w-full border-b-4 border-black bg-[#FFE066] px-0 py-5 justify-between items-center" style={{ boxShadow: 'none' }}>
       <div className="flex items-center gap-4 pl-8">
         <div className="logo-icon ml-30" style={{ width: 50, height: 50, background: '#FF6B6B', border: '4px solid #000', boxShadow: '4px 4px 0 #000', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 20, transform: 'rotate(-10deg)' }}>
           <i className="fas fa-chart-line"></i>

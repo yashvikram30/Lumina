@@ -119,20 +119,20 @@ const SendPage = () => {
 
   return (
     <>
-    <main className="relative flex flex-col items-center justify-center min-h-screen w-full gap-8 py-8 bg-[#eaf6ff]">
-      <FloatingShapes />
-      <h1 className="text-4xl font-black mb-2 z-10">Send Tokens</h1>
-      <Banner className="z-10 max-w-xl mx-auto text-lg rounded-none">Send tokens to any address on Solana. Choose a token, enter the recipient, and amount.</Banner>
-      <div className="w-full max-w-2xl flex flex-col gap-10 items-center z-10">
+    <main className="relative flex flex-col items-center justify-top min-h-screen w-full gap-6 md:gap-8 py-6 md:py-8 bg-[#eaf6ff] px-4 md:px-0">
+      <div className="hidden md:block"><FloatingShapes /></div>
+      <h1 className="text-2xl md:text-4xl font-black mb-2 z-10">Send Tokens</h1>
+      <Banner className="z-10 max-w-xl mx-auto text-base md:text-lg rounded-none">Send tokens to any address on Solana. Choose a token, enter the recipient, and amount.</Banner>
+      <div className="w-full max-w-2xl flex flex-col gap-6 md:gap-10 items-center z-10">
         <NeobrutalCard
           className="bg-white border-black shadow-[8px_8px_0_0_#000] hover:shadow-[6px_6px_0_0_#000] transition-all duration-200 w-full"
           rounded="rounded-none"
-          padding="p-8 sm:p-10"
+          padding="p-4 md:p-8 lg:p-10"
         >
-          <form className="flex flex-col gap-6 w-full max-w-lg mx-auto" onSubmit={e => { e.preventDefault(); handleSend(); }}>
-            <label className="font-mono text-lg">Token
+          <form className="flex flex-col gap-4 md:gap-6 w-full max-w-lg mx-auto" onSubmit={e => { e.preventDefault(); handleSend(); }}>
+            <label className="font-mono text-base md:text-lg">Token
               <select
-                className="w-full mt-1 p-2 border-2 border-black rounded-none font-mono"
+                className="w-full mt-1 p-2 border-2 border-black rounded-none font-mono text-sm md:text-base"
                 value={selectedMint}
                 onChange={e => setSelectedMint(e.target.value)}
               >
@@ -147,9 +147,9 @@ const SendPage = () => {
                 })}
               </select>
             </label>
-            <label className="font-mono text-lg">Recipient Address
+            <label className="font-mono text-base md:text-lg">Recipient Address
               <input
-                className="w-full mt-1 p-2 border-2 border-black rounded-none font-mono"
+                className="w-full mt-1 p-2 border-2 border-black rounded-none font-mono text-sm md:text-base"
                 type="text"
                 value={recipient}
                 onChange={e => setRecipient(e.target.value)}
@@ -157,9 +157,9 @@ const SendPage = () => {
                 disabled={loading}
               />
             </label>
-            <label className="font-mono text-lg">Amount
+            <label className="font-mono text-base md:text-lg">Amount
               <input
-                className="w-full mt-1 p-2 border-2 border-black rounded-none font-mono"
+                className="w-full mt-1 p-2 border-2 border-black rounded-none font-mono text-sm md:text-base"
                 type="number"
                 min="0"
                 value={amount}
@@ -172,12 +172,12 @@ const SendPage = () => {
               type="submit"
               variant="accent"
               size="lg"
-              className="mt-4 border-black shadow-[2px_2px_0_0_#000] hover:shadow-[4px_4px_0_0_#000] rounded-none w-full text-xl font-black"
+              className="mt-4 border-black shadow-[2px_2px_0_0_#000] hover:shadow-[4px_4px_0_0_#000] rounded-none w-full text-lg md:text-xl font-black"
               disabled={loading}
             >
               {loading ? "Sending..." : "Send"}
             </Button>
-            {message && <div className="mt-2 text-center font-mono text-base">{message}</div>}
+            {message && <div className="mt-2 text-center font-mono text-sm md:text-base">{message}</div>}
           </form>
         </NeobrutalCard>
       </div>
