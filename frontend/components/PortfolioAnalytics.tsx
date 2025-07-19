@@ -211,39 +211,39 @@ const PortfolioAnalytics: React.FC = () => {
   }
 
   return (
-    <div className="w-full max-w-2xl mx-auto mt-8 mb-4 flex flex-col items-center gap-4">
+    <div className="w-full max-w-2xl mx-auto mt-4 md:mt-8 mb-4 flex flex-col items-center gap-4 md:gap-6 px-2 md:px-0">
       {/* <Banner>Portfolio Analytics</Banner> */}
       {allPricesZero && (
-        <div className="w-full text-center text-red-600 font-bold mb-2">
+        <div className="w-full text-center text-red-600 font-bold mb-2 text-sm md:text-base">
           Warning: No price data available for your tokens. Portfolio value may be inaccurate.
         </div>
       )}
       {tokensWithNoPrice.length > 0 && !allPricesZero && (
-        <div className="w-full text-center text-yellow-600 font-semibold mb-2 text-sm">
+        <div className="w-full text-center text-yellow-600 font-semibold mb-2 text-xs md:text-sm">
           No price data for: {tokensWithNoPrice.map(t => t.symbol).join(", ")}
         </div>
       )}
-      <div className="flex flex-col md:flex-row w-full gap-4 items-center justify-between">
-        <OutlinedPanel className="flex-1 min-w-[220px]">
-          <div className="text-lg font-semibold mb-1 text-black">Total Value</div>
-          <div className="text-3xl font-bold text-green-600 mb-2">${totalValue.toLocaleString(undefined, { maximumFractionDigits: 2 })}</div>
+      <div className="flex flex-col md:flex-row w-full gap-3 md:gap-4 items-center justify-between">
+        <OutlinedPanel className="flex-1 min-w-[200px] md:min-w-[220px] w-full mb-3 md:mb-0">
+          <div className="text-base md:text-lg font-semibold mb-1 text-black">Total Value</div>
+          <div className="text-2xl md:text-3xl font-bold text-green-600 mb-2">${totalValue.toLocaleString(undefined, { maximumFractionDigits: 2 })}</div>
         </OutlinedPanel>
-        <OutlinedPanel className="flex-1 min-w-[180px] items-center">
-          <div className="text-lg font-semibold mb-1 text-black">24h Change</div>
+        <OutlinedPanel className="flex-1 min-w-[160px] md:min-w-[180px] items-center w-full mb-3 md:mb-0">
+          <div className="text-base md:text-lg font-semibold mb-1 text-black">24h Change</div>
           <Badge color="bg-pink-200">{change24h !== "--" ? `${change24h}%` : "--%"}</Badge>
         </OutlinedPanel>
-        <OutlinedPanel className="flex-1 min-w-[180px] items-center">
-          <div className="text-lg font-semibold mb-1 text-black">Top Holding</div>
+        <OutlinedPanel className="flex-1 min-w-[160px] md:min-w-[180px] items-center w-full mb-3 md:mb-0">
+          <div className="text-base md:text-lg font-semibold mb-1 text-black">Top Holding</div>
           {topHolding && (
             <Badge color="bg-blue-200">{topHolding.symbol} ({topHoldingPercent})</Badge>
           )}
         </OutlinedPanel>
       </div>
       <OutlinedPanel className="w-full mt-2">
-        <div className="text-lg font-semibold mb-2 text-black">Allocation</div>
+        <div className="text-base md:text-lg font-semibold mb-2 text-black">Allocation</div>
         <div className="w-full flex justify-center items-center">
           {pieData.length > 0 ? (
-            <ResponsiveContainer width={220} height={220}>
+            <ResponsiveContainer width="100%" height={200} className="max-w-[220px]">
               <PieChart>
                 <Pie
                   data={pieData}
@@ -251,7 +251,7 @@ const PortfolioAnalytics: React.FC = () => {
                   nameKey="name"
                   cx="50%"
                   cy="50%"
-                  outerRadius={90}
+                  outerRadius={80}
                   label={({ name, percent }) => `${name} ${((percent ?? 0) * 100).toFixed(0)}%`}
                   stroke="#000"
                   strokeWidth={3}
@@ -264,31 +264,31 @@ const PortfolioAnalytics: React.FC = () => {
               </PieChart>
             </ResponsiveContainer>
           ) : (
-            <div className="w-40 h-40 bg-gray-100 border-2 border-dashed border-gray-300 flex items-center justify-center text-gray-400">No data</div>
+            <div className="w-32 h-32 md:w-40 md:h-40 bg-gray-100 border-2 border-dashed border-gray-300 flex items-center justify-center text-gray-400 text-sm md:text-base">No data</div>
           )}
         </div>
       </OutlinedPanel>
       <OutlinedPanel className="w-full mt-2">
-        <div className="text-lg font-semibold mb-2 text-black">Portfolio Value History (30d)</div>
+        <div className="text-base md:text-lg font-semibold mb-2 text-black">Portfolio Value History (30d)</div>
         <div className="w-full flex justify-center items-center">
           {historyLoading ? (
-            <div className="w-full text-center py-8">Loading portfolio history...</div>
+            <div className="w-full text-center py-6 md:py-8 text-sm md:text-base">Loading portfolio history...</div>
           ) : historyError ? (
-            <div className="w-full text-center py-8 text-red-600">
+            <div className="w-full text-center py-6 md:py-8 text-red-600 text-sm md:text-base">
               {historyError}
-              <button onClick={handleRetryHistory} className="ml-4 px-4 py-2 bg-pink-200 border-2 border-black rounded font-bold">Retry</button>
+              <button onClick={handleRetryHistory} className="ml-2 md:ml-4 px-3 md:px-4 py-1 md:py-2 bg-pink-200 border-2 border-black rounded font-bold text-xs md:text-sm">Retry</button>
             </div>
           ) : portfolioHistory.length > 0 ? (
-            <ResponsiveContainer width="100%" height={220}>
+            <ResponsiveContainer width="100%" height={180} className="max-h-[220px]">
               <LineChart data={portfolioHistory} margin={{ top: 8, right: 16, left: 0, bottom: 8 }}>
-                <XAxis dataKey="time" tickFormatter={ts => new Date(ts * 1000).toLocaleDateString()} fontSize={12} />
-                <YAxis dataKey="value" domain={["auto", "auto"]} fontSize={12} tickFormatter={v => `$${v.toLocaleString(undefined, { maximumFractionDigits: 0 })}`} />
+                <XAxis dataKey="time" tickFormatter={ts => new Date(ts * 1000).toLocaleDateString()} fontSize={10} />
+                <YAxis dataKey="value" domain={["auto", "auto"]} fontSize={10} tickFormatter={v => `$${v.toLocaleString(undefined, { maximumFractionDigits: 0 })}`} />
                 <LineTooltip labelFormatter={ts => new Date(ts * 1000).toLocaleDateString()} formatter={(v: number) => `$${v.toLocaleString(undefined, { maximumFractionDigits: 2 })}`} />
                 <Line type="monotone" dataKey="value" stroke="#6366f1" strokeWidth={2} dot={false} />
               </LineChart>
             </ResponsiveContainer>
           ) : (
-            <div className="w-full text-center py-8 text-gray-400">No historical data available for your tokens.</div>
+            <div className="w-full text-center py-6 md:py-8 text-gray-400 text-sm md:text-base">No historical data available for your tokens.</div>
           )}
         </div>
       </OutlinedPanel>
